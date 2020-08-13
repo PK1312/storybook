@@ -1,7 +1,7 @@
 version: 2.1
 
 executor:
-  SB-Executor:
+  sb_node:
     parameters:
         class:
           description: The Resource class
@@ -14,7 +14,7 @@ executor:
 
 jobs:
   install:
-    executor: SB-Executor
+    executor: sb_node
     steps:
       - checkout
       - restore_cache:
@@ -43,7 +43,7 @@ jobs:
             - app
             - lib
   build:
-    executor: SB-Executor
+    executor: sb_node
     steps:
       - checkout
       - attach_workspace:
@@ -60,7 +60,7 @@ jobs:
             - app
             - lib
   chromatic:
-    executor: SB-Executor
+    executor: sb_node
     parallelism: 11
     steps:
       - checkout
@@ -71,7 +71,7 @@ jobs:
           command: |
             yarn run-chromatics
   packtracker:
-    executor: SB-Executor
+    executor: sb_node
     steps:
       - checkout
       - attach_workspace:
@@ -82,7 +82,7 @@ jobs:
             cd examples/official-storybook
             yarn packtracker
   examples:
-    executor: SB-Executor
+    executor: sb_node
     parallelism: 11
     steps:
       - checkout
@@ -97,7 +97,7 @@ jobs:
           paths:
             - built-storybooks
   publish:
-    executor: SB-Executor
+    executor: sb_node
     steps:
       - checkout
       - attach_workspace:
@@ -194,7 +194,7 @@ jobs:
           destination: cypress
 
   smoke-tests:
-    executor: SB-Executor
+    executor: sb_node
     steps:
       - checkout
       - attach_workspace:
@@ -260,7 +260,7 @@ jobs:
             cd examples/cra-react15
             yarn storybook --smoke-test --quiet
   frontpage:
-    executor: SB-Executor
+    executor: sb_node
     steps:
       - checkout
       - restore_cache:
@@ -276,7 +276,7 @@ jobs:
   lint:
     executor:
       class: small
-      name: SB-Executor
+      name: sb_node
     steps:
       - checkout
       - attach_workspace:
@@ -285,7 +285,7 @@ jobs:
           name: Lint
           command: yarn lint
   test:
-    executor: SB-Executor
+    executor: sb_node
     steps:
       - checkout
       - attach_workspace:
@@ -298,7 +298,7 @@ jobs:
           paths:
             - coverage
   coverage:
-    executor: SB-Executor
+    executor: sb_node
     steps:
       - checkout
       - attach_workspace:
