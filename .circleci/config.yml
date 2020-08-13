@@ -1,6 +1,6 @@
 version: 2.1
 
-executor:
+executors:
   sb_node:
     parameters:
         class:
