@@ -1,14 +1,20 @@
 version: 2.1
 
-aliases:
-  - &defaults
+executor:
+  SB-Executor:
+    parameters:
+        class:
+          description: The Resource class
+          type: enum
+          enum: ["small", "medium", "large", "xlarge"]
     working_directory: /tmp/storybook
     docker:
       - image: circleci/node:10-browsers
+    resource_class: <<parameters.class>>
 
 jobs:
   install:
-    <<: *defaults
+    executor: SB-Executor
     steps:
       - checkout
       - restore_cache:
@@ -37,7 +43,7 @@ jobs:
             - app
             - lib
   build:
-    <<: *defaults
+    executor: SB-Executor
     steps:
       - checkout
       - attach_workspace:
@@ -54,7 +60,7 @@ jobs:
             - app
             - lib
   chromatic:
-    <<: *defaults
+    executor: SB-Executor
     parallelism: 11
     steps:
       - checkout
@@ -65,7 +71,7 @@ jobs:
           command: |
             yarn run-chromatics
   packtracker:
-    <<: *defaults
+    executor: SB-Executor
     steps:
       - checkout
       - attach_workspace:
@@ -76,7 +82,7 @@ jobs:
             cd examples/official-storybook
             yarn packtracker
   examples:
-    <<: *defaults
+    executor: SB-Executor
     parallelism: 11
     steps:
       - checkout
@@ -91,7 +97,7 @@ jobs:
           paths:
             - built-storybooks
   publish:
-    <<: *defaults
+    executor: SB-Executor
     steps:
       - checkout
       - attach_workspace:
@@ -188,7 +194,7 @@ jobs:
           destination: cypress
 
   smoke-tests:
-    <<: *defaults
+    executor: SB-Executor
     steps:
       - checkout
       - attach_workspace:
@@ -254,7 +260,7 @@ jobs:
             cd examples/cra-react15
             yarn storybook --smoke-test --quiet
   frontpage:
-    <<: *defaults
+    executor: SB-Executor
     steps:
       - checkout
       - restore_cache:
@@ -268,7 +274,9 @@ jobs:
           name: Trigger build
           command: ./scripts/build-frontpage.js
   lint:
-    <<: *defaults
+    executor:
+      class: small
+      name: SB-Executor
     steps:
       - checkout
       - attach_workspace:
@@ -277,7 +285,7 @@ jobs:
           name: Lint
           command: yarn lint
   test:
-    <<: *defaults
+    executor: SB-Executor
     steps:
       - checkout
       - attach_workspace:
@@ -290,7 +298,7 @@ jobs:
           paths:
             - coverage
   coverage:
-    <<: *defaults
+    executor: SB-Executor
     steps:
       - checkout
       - attach_workspace:
