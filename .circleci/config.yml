@@ -299,7 +299,9 @@ jobs:
           paths:
             - coverage
   coverage:
-    executor: sb_node
+    executor:
+      class: small
+      name: sb_node
     steps:
       - checkout
       - attach_workspace:
